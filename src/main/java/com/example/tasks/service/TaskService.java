@@ -5,9 +5,9 @@ import com.example.tasks.dto.TaskDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -44,6 +44,21 @@ public class TaskService {
                 .toList();
     }
 
+    public List<TaskDTO> getTasksEarlierThan(LocalDateTime date) {
+        log.info("Getting tasks due date earlier than date: {}", date);
+
+        return tasks.stream()
+                .filter(task -> task.getDueDate().isBefore(date))
+                .toList();
+    }
+
+    public Map<String, Long> getTaskCountByStatus() {
+        log.info("Getting task count by status...");
+
+        return tasks.stream()
+                .collect(Collectors.groupingBy(TaskDTO::getStatus, Collectors.counting()));
+    }
+
 
     public List<TaskDTO> searchTasksByKeyword(String keyword) {
         log.info("Searching tasks by keyword: {}", keyword);
@@ -60,6 +75,15 @@ public class TaskService {
         tasks.add(builtTask);
         log.info("Added task: {}", builtTask);
         return builtTask;
+    }
+
+    public List<TaskDTO> addTasks(List<TaskDTO> tasksList){
+        for(TaskDTO task : tasksList){
+            TaskDTO builtTask = buildTask(task);
+            tasks.add(builtTask);
+        }
+
+        return tasks;
     }
 
     public void deleteAllTasks() {

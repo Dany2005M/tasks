@@ -3,12 +3,16 @@ package com.example.tasks.controller;
 import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tasks")
+@Validated
 public class TaskController {
     private final TaskService taskService;
 
@@ -41,9 +45,24 @@ public class TaskController {
         return taskService.searchTasksByKeyword(keyword);
     }
 
+    @GetMapping("/earlier/{date}")
+    public List<TaskDTO> getTasksEarlierThan(@PathVariable LocalDateTime date) {
+        return taskService.getTasksEarlierThan(date);
+    }
+
+    @GetMapping("/stats")
+    public Map<String, Long> getTaskCountByStatus() {
+        return taskService.getTaskCountByStatus();
+    }
+
     @PostMapping
     public TaskDTO addTask(@Valid @RequestBody TaskDTO task) {
         return taskService.addTask(task);
+    }
+
+    @PostMapping("/multiple-tasks")
+    public List<TaskDTO> addTasks(@Valid @RequestBody List<TaskDTO> tasks) {
+        return taskService.addTasks(tasks);
     }
 
     @DeleteMapping
