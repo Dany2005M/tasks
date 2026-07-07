@@ -1,6 +1,8 @@
 package com.example.tasks.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,8 +15,15 @@ import java.time.LocalDateTime;
 @ToString
 
 public class TaskDTO {
+    @NotNull(message = "The ID can't be null")
     private Long id;
+
+    @NotBlank(message = "The content can't be null or empty")
     private String content;
+
+    @NotNull(message = "The due date can't be null")
     private LocalDateTime dueDate;
+
+    @NotBlank(message = "The status can't be null or empty")
     private String status;
 }

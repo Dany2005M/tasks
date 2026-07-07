@@ -2,6 +2,7 @@ package com.example.tasks.controller;
 
 import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskDTO addTask(@RequestBody TaskDTO task) {
+    public TaskDTO addTask(@Valid @RequestBody TaskDTO task) {
         return taskService.addTask(task);
     }
 
@@ -56,7 +57,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public TaskDTO updateTask(@RequestBody TaskDTO task, @PathVariable Long id) {
+    public TaskDTO updateTask(@Valid @RequestBody TaskDTO task, @PathVariable Long id) {
         return taskService.updateTaskById(id,task);
     }
 

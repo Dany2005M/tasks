@@ -49,7 +49,7 @@ public class TaskService {
         log.info("Searching tasks by keyword: {}", keyword);
 
         return tasks.stream()
-                .filter(task -> task.getContent()!= null && task.getContent().toLowerCase().contains(keyword.toLowerCase()))
+                .filter(task -> task.getContent().toLowerCase().contains(keyword.toLowerCase()))
                 .toList();
     }
 
