@@ -11,7 +11,6 @@ import java.util.List;
 public class TaskController {
     private final TaskService taskService;
 
-
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -25,9 +24,30 @@ public class TaskController {
     public TaskDTO getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
+
+    @GetMapping("/sorted-by-due-date")
+    public List<TaskDTO> getTasksSortedByDueDate() {
+        return taskService.getTasksSortedByDueDate();
+    }
+
+    @GetMapping("/status/{status}")
+    public List<TaskDTO> getTasksByStatus(@PathVariable String status) {
+        return taskService.getTasksByStatus(status);
+    }
+
+    @GetMapping("/search/{keyword}")
+    public List<TaskDTO> searchTasksByKeyword(@PathVariable String keyword) {
+        return taskService.searchTasksByKeyword(keyword);
+    }
+
     @PostMapping
-    public List<TaskDTO> addTask(@RequestBody TaskDTO task) {
+    public TaskDTO addTask(@RequestBody TaskDTO task) {
         return taskService.addTask(task);
+    }
+
+    @DeleteMapping
+    public void deleteAllTasks() {
+        taskService.deleteAllTasks();
     }
 
     @DeleteMapping("/{id}")
@@ -38,6 +58,11 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskDTO updateTask(@RequestBody TaskDTO task, @PathVariable Long id) {
         return taskService.updateTaskById(id,task);
+    }
+
+    @PatchMapping("/{id}/status/{status}")
+    public TaskDTO updateTaskStatus(@PathVariable Long id, @PathVariable String status) {
+        return taskService.updateTaskStatus(id,status);
     }
 
 }

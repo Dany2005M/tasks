@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 
 public class TaskDTO {
-    private long id;
+    private Long id;
     private String content;
     private LocalDateTime dueDate;
     private String status;
