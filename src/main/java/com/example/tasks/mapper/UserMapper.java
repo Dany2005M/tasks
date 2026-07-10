@@ -25,8 +25,6 @@ public class UserMapper {
                 .username(userDTO.getUsername())
                 .birthDate(userDTO.getBirthDate())
                 .isInternal(userDTO.getIsInternal())
-                .createdBy(userDTO.getCreatedBy())
-                .lastUpdatedBy(userDTO.getLastUpdatedBy())
                 .createdByFullName(userDTO.getCreatedByFullName())
                 .build();
     }

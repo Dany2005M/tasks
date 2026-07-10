@@ -4,6 +4,7 @@ import com.example.tasks.domain.User;
 import com.example.tasks.dto.UserDTO;
 import com.example.tasks.mapper.UserMapper;
 import com.example.tasks.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserService {
                 .toList();
     }
 
-
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         log.info("User created!");
 

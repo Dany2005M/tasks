@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/legacy-tasks")
 @Validated
 public class LegacyTaskController {
     private final LegacyTaskService legacyTaskService;

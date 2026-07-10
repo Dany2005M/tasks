@@ -21,8 +21,6 @@ public class StatusTypeMapper {
     public StatusType toEntity(StatusTypeDTO statusTypeDTO) {
         return StatusType.builder()
                 .statusName(statusTypeDTO.getStatusName())
-                .createdBy(statusTypeDTO.getCreatedBy())
-                .lastUpdatedBy(statusTypeDTO.getLastUpdatedBy())
                 .createdByFullName(statusTypeDTO.getCreatedByFullName())
                 .build();
     }
