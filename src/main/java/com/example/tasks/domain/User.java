@@ -5,23 +5,30 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "status_types")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StatusType {
+public class User {
     @Id
-    @Column(name = "STATUS_TYPE_ID")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String statusTypeId;
+    @Column(name = "USER_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 
-    @Column(name = "STATUS_NAME")
-    private String statusName;
+    @Column(name = "USERNAME")
+    private String username;
+
+    @Column(name = "BIRTH_DATE")
+    private LocalDate birthDate;
+
+    @Column(name = "IS_INTERNAL")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
+    @Builder.Default
+    private Boolean isInternal = true;
 
     @Column(name = "CREATED_BY", nullable = false)
     @Builder.Default
@@ -33,7 +40,7 @@ public class StatusType {
 
     @Column(name = "LAST_UPDATE_DATE", nullable = false)
     @Builder.Default
-    private LocalDate  lastUpdateDate = LocalDate.now();
+    private LocalDate lastUpdateDate =  LocalDate.now();
 
     @Column(name = "LAST_UPDATED_BY", nullable = false)
     @Builder.Default
@@ -41,5 +48,6 @@ public class StatusType {
 
     @Column(name = "CREATED_BY_FULLNAME")
     private String createdByFullName;
+
 
 }

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 
-public class TaskDTO {
+public class LegacyTaskDTO {
     @NotNull(message = "The ID can't be null")
     private Long id;
 

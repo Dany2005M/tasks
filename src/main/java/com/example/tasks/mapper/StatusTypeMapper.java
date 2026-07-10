@@ -12,6 +12,9 @@ public class StatusTypeMapper {
                 .statusName(statusType.getStatusName())
                 .createdBy(statusType.getCreatedBy())
                 .creationDate(statusType.getCreationDate())
+                .lastUpdateDate(statusType.getLastUpdateDate())
+                .lastUpdatedBy(statusType.getLastUpdatedBy())
+                .createdByFullName(statusType.getCreatedByFullName())
                 .build();
     }
 
@@ -19,6 +22,8 @@ public class StatusTypeMapper {
         return StatusType.builder()
                 .statusName(statusTypeDTO.getStatusName())
                 .createdBy(statusTypeDTO.getCreatedBy())
+                .lastUpdatedBy(statusTypeDTO.getLastUpdatedBy())
+                .createdByFullName(statusTypeDTO.getCreatedByFullName())
                 .build();
     }
 

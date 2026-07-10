@@ -1,21 +1,21 @@
 package com.example.tasks.dto;
 
-
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StatusTypeDTO {
-    private String statusTypeId;
-    private String statusName;
-    private String createdBy;
+public class UserDTO {
+    private Long userId;
+    private String username;
+    private LocalDate birthDate;
+    private Boolean isInternal;
     private LocalDate creationDate;
+    private String createdBy;
     private LocalDate lastUpdateDate;
     private String lastUpdatedBy;
     private String createdByFullName;
