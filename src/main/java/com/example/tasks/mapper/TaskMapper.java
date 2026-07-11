@@ -14,6 +14,10 @@ public class TaskMapper {
     private final UserRepository userRepository;
 
     public TaskDTO toDTO(Task task) {
+        if(task == null) {
+            return null;
+        }
+
         return TaskDTO.builder()
                 .taskId(task.getTaskId())
                 .name(task.getName())
@@ -29,6 +33,10 @@ public class TaskMapper {
     }
 
     public Task toEntity(TaskDTO taskDTO) {
+        if(taskDTO == null) {
+            return null;
+        }
+
         return Task.builder()
                 .name(taskDTO.getName())
                 .dueDate(taskDTO.getDueDate())

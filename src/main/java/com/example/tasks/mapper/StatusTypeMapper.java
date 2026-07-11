@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatusTypeMapper {
     public StatusTypeDTO toDto(StatusType statusType) {
+        if(statusType == null) {
+            return null;
+        }
+
         return StatusTypeDTO.builder()
                 .statusTypeId(statusType.getStatusTypeId())
                 .statusName(statusType.getStatusName())
@@ -19,6 +23,10 @@ public class StatusTypeMapper {
     }
 
     public StatusType toEntity(StatusTypeDTO statusTypeDTO) {
+        if(statusTypeDTO == null) {
+            return null;
+        }
+
         return StatusType.builder()
                 .statusName(statusTypeDTO.getStatusName())
                 .createdByFullName(statusTypeDTO.getCreatedByFullName())
