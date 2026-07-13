@@ -46,7 +46,6 @@ public class UserService {
                 .toList();
     }
 
-    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         log.info("User created!");
 
@@ -55,7 +54,6 @@ public class UserService {
         return userMapper.toDTO(savedUser);
     }
 
-    @Transactional
     public List<UserDTO> createUsers(List<UserDTO> userDTOs) {
         log.info("Users created!");
 
@@ -68,7 +66,6 @@ public class UserService {
         return getAllUsers();
     }
 
-    @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         log.info("User updated!");
 
@@ -89,14 +86,12 @@ public class UserService {
         return userMapper.toDTO(savedUser);
     }
 
-    @Transactional
     public void deleteAllUsers() {
         log.info("Users deleted!");
 
         userRepository.deleteAll();
     }
 
-    @Transactional
     public List<UserDTO> deleteUserById(Long id) {
         log.info("User with id {} deleted!", id);
 

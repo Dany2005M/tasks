@@ -48,7 +48,6 @@ public class TaskService {
                 .toList();
     }
 
-    @Transactional
     public TaskDTO createTask(TaskDTO taskDTO) {
         log.info("Task created!");
 
@@ -58,7 +57,6 @@ public class TaskService {
         return taskMapper.toDTO(savedTask);
     }
 
-    @Transactional
     public List<TaskDTO> createTasks(List<TaskDTO> taskDTOs) {
         log.info("Tasks created!");
 
@@ -70,7 +68,6 @@ public class TaskService {
         return getAllTasks();
     }
 
-    @Transactional
     public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
         log.info("Task with id {} updated!", id);
 
@@ -92,14 +89,12 @@ public class TaskService {
         return taskMapper.toDTO(savedTask);
     }
 
-    @Transactional
     public void deleteAllTasks() {
         log.info("Tasks deleted!");
 
         taskRepository.deleteAll();
     }
 
-    @Transactional
     public List<TaskDTO> deleteTaskById(Long id) {
         log.info("Task with id {} deleted!", id);
 

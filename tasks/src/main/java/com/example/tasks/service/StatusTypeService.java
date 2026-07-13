@@ -43,7 +43,6 @@ public class StatusTypeService {
                 .toList();
     }
 
-    @Transactional
     public StatusTypeDTO createStatus(StatusTypeDTO statusTypeDTO) {
         log.info("Status created!");
 
@@ -53,7 +52,6 @@ public class StatusTypeService {
         return statusMapper.toDto(savedStatus);
     }
 
-    @Transactional
     public List<StatusTypeDTO> createStatuses(List<StatusTypeDTO> statusTypeDTOs) {
         log.info("Statuses created!");
 
@@ -66,7 +64,6 @@ public class StatusTypeService {
         return getAllStatuses();
     }
 
-    @Transactional
     public StatusTypeDTO updateStatus(String id, StatusTypeDTO statusTypeDTO) {
         log.info("Status with id {} updated!", id);
 
@@ -85,14 +82,12 @@ public class StatusTypeService {
         return statusMapper.toDto(savedStatus);
     }
 
-    @Transactional
     public void deleteAllStatuses() {
         log.info("Statuses deleted!");
 
         statusTypeRepository.deleteAll();
     }
 
-    @Transactional
     public List<StatusTypeDTO> deleteStatusById(String id) {
         log.info("Status with id {} deleted!", id);
 
