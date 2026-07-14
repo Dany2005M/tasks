@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tasks")
@@ -32,6 +34,26 @@ public class TaskController {
         return taskService.getTasksByUserId(id);
     }
 
+    @GetMapping("/sorted-by-due-date")
+    public List<TaskDTO> getTasksSortedByDueDate() {
+        return taskService.getTasksSortedByDueDate();
+    }
+
+    @GetMapping("/status/{status}")
+    public List<TaskDTO> getTasksByStatusName(@PathVariable String status) {
+        return taskService.getTasksByStatusName(status);
+    }
+
+    @GetMapping("/earlier/{date}")
+    public List<TaskDTO> getTasksEarlierThan(@PathVariable LocalDate date) {
+        return taskService.getTasksEarlierThan(date);
+    }
+
+    @GetMapping("/stats")
+    public Map<String, Long> getTaskCountGroupedByStatus() {
+        return taskService.getTaskCountGroupedByStatus();
+    }
+
     @PostMapping
     public TaskDTO createTask(@RequestBody @Valid TaskDTO taskDTO) {
         return taskService.createTask(taskDTO);
@@ -45,6 +67,11 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskDTO updateTask(@PathVariable Long id, @RequestBody @Valid TaskDTO taskDTO) {
         return taskService.updateTask(id, taskDTO);
+    }
+
+    @PatchMapping("/{id}/status/{statusId}")
+    public TaskDTO updateTaskStatus(@PathVariable Long id, @PathVariable String statusId) {
+        return taskService.updateTaskStatus(id, statusId);
     }
 
     @DeleteMapping

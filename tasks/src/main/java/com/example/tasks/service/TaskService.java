@@ -1,17 +1,20 @@
 package com.example.tasks.service;
 
+import com.example.tasks.domain.StatusType;
 import com.example.tasks.domain.Task;
 import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.mapper.TaskMapper;
 import com.example.tasks.repository.StatusTypeRepository;
 import com.example.tasks.repository.TaskRepository;
 import com.example.tasks.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,6 +49,59 @@ public class TaskService {
                 .stream()
                 .map(taskMapper::toDTO)
                 .toList();
+    }
+
+    public List<TaskDTO> getTasksSortedByDueDate() {
+        log.info("Tasks retrieved sorted by due date!");
+
+        return taskRepository.findByOrderByDueDateAsc()
+                .stream()
+                .map(taskMapper::toDTO)
+                .toList();
+    }
+
+    public List<TaskDTO> getTasksByStatusName(String statusName) {
+        log.info("Tasks retrieved by status name {} retrieved!", statusName);
+
+        return taskRepository.findByStatusType_StatusName(statusName)
+                .stream()
+                .map(taskMapper::toDTO)
+                .toList();
+    }
+
+    public List<TaskDTO> getTasksEarlierThan(LocalDate date){
+        log.info("Getting tasks due date earlier than date: {}", date);
+
+        return taskRepository.findByDueDateBefore(date)
+                .stream()
+                .map(taskMapper::toDTO)
+                .toList();
+    }
+
+    public Map<String, Long> getTaskCountGroupedByStatus()
+    {
+        log.info("Task count grouped by status retrieved!");
+
+        return taskRepository.countTasksGroupedByStatus()
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> (String)row[0], row -> (Long)row[1]
+                ));
+    }
+
+    public TaskDTO updateTaskStatus(Long taskId, String statusId) {
+        log.info("Task status with id {} updated!", taskId);
+
+        Task task = taskRepository.findById(taskId)
+                .orElse(null);
+
+        StatusType updatedStatus = statusTypeRepository.getReferenceById(statusId);
+        if(task != null) {
+            task.setStatusType(updatedStatus);
+            Task savedTask = taskRepository.save(task);
+            return taskMapper.toDTO(savedTask);
+        }
+        return null;
     }
 
     public TaskDTO createTask(TaskDTO taskDTO) {
@@ -102,6 +158,7 @@ public class TaskService {
 
         return getAllTasks();
     }
+
 
 
 }
