@@ -64,6 +64,11 @@
   letter-spacing: 0.05em;
 }
 
+.status-badge.inactive {
+  background-color: #fee2e2; 
+  color: #991b1b;            
+}
+
 /* Card Details */
 .task-body {
   display: flex;
@@ -86,4 +91,14 @@
 .detail-value {
   color: #374151;
   font-weight: 500;
+}
+
+/* Force the Bootstrap modal backdrop to stay behind the modal */
+::ng-deep .modal-backdrop {
+  z-index: 1040 !important;
+}
+
+/* Force the modal window to come to the absolute front */
+::ng-deep .modal {
+  z-index: 1050 !important;
 }

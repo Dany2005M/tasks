@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/statuses")
 @Validated
+@CrossOrigin
 public class StatusTypeController {
     private final StatusTypeService statusTypeService;
 

@@ -1,7 +1,9 @@
-<p>my-task-component works!</p>
-
 <div class="task-dashboard">
-  <h2 class="dashboard-title">My Tasks</h2>
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="dashboard-title mb-0">My Tasks</h2>
+    <button class="btn btn-primary" (click)="openTaskModal()">Add Task</button>
+  </div>
 
   <div class="task-grid">
     @for (task of tasks(); track task.taskId) {
@@ -9,7 +11,9 @@
         
         <div class="task-header">
           <h3 class="task-title">{{task.name}}</h3>
-          <span class="status-badge">Active</span> 
+          <span class="status-badge">
+            {{ getStatusName(task.statusTypeId) }}
+          </span>
         </div>
 
         <div class="task-body">
@@ -22,6 +26,12 @@
             <span class="detail-label">Created By</span>
             <span class="detail-value assignee">{{task.createdByFullName}}</span>
           </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4 gap-2">
+          <button class="btn btn-danger btn-sm" (click)="deleteTask(task.taskId)">Delete</button>
+          
+          <button class="btn btn-outline-primary btn-sm" (click)="openTaskModal(task)">Edit</button>
         </div>
 
       </div>

@@ -1,1 +1,32 @@
-<p>new-task-component works!</p>
+<div class="modal-header">
+  <h4 class="modal-title">{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form>
+    <div class="mb-3">
+      <label class="form-label">Task Name</label>
+      <input type="text" class="form-control" name="name" [(ngModel)]="formData.name">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Due Date</label>
+      <input type="date" class="form-control" name="dueDate" [(ngModel)]="formData.dueDate">
+    </div>
+
+        <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="statusType" [(ngModel)]="formData.statusType">
+        @for (status of availableStatuses(); track status.statusTypeId) {
+          <option [ngValue]="status">{{ status.statusName }}</option>
+        }
+      </select>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="saveTask()">Save</button>
+</div>
