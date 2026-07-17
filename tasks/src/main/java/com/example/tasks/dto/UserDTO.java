@@ -14,6 +14,8 @@ public class UserDTO {
     private String username;
     private LocalDate birthDate;
     private Boolean isInternal;
+    private String email;
+    private String password;
     private LocalDate creationDate;
     private String createdBy;
     private LocalDate lastUpdateDate;

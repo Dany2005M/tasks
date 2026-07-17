@@ -28,7 +28,13 @@ public class User {
     @Column(name = "IS_INTERNAL")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter.class)
     @Builder.Default
-    private Boolean isInternal = true;
+    private Boolean isInternal = false;
+
+    @Column(name = "EMAIL", nullable = false)
+    private String email;
+
+    @Column(name = "PASSWORD", nullable = false)
+    private String password;
 
     @Column(name = "CREATED_BY", nullable = false)
     @Builder.Default

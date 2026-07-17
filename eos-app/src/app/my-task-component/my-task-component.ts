@@ -31,7 +31,13 @@ export class MyTaskComponent implements OnInit{
   loadTasks() : void {
     this.taskService.getTasks().subscribe(res => {
       console.log('API Response:', res);
-      this.tasks.set(res);
+      const sortedTasks = res.sort((a: any, b: any) => {
+        const dateA = new Date(a.dueDate).getTime();
+        const dateB = new Date(b.dueDate).getTime();
+        
+        return dateB - dateA; 
+      });
+      this.tasks.set(sortedTasks);
     });
   }
 

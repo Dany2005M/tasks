@@ -1,0 +1,70 @@
+<div class="container d-flex justify-content-center align-items-center mt-5">
+  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+    
+    <div class="btn-group w-100 mb-4" role="group">
+      <button 
+        type="button" 
+        class="btn" 
+        [class.btn-primary]="!isLoginMode" 
+        [class.btn-outline-primary]="isLoginMode"
+        (click)="setMode('register')">
+        Register
+      </button>
+      <button 
+        type="button" 
+        class="btn" 
+        [class.btn-primary]="isLoginMode" 
+        [class.btn-outline-primary]="!isLoginMode"
+        (click)="setMode('login')">
+        Authenticated
+      </button>
+    </div>
+
+    @if (!isLoginMode) {
+      <form (ngSubmit)="onRegister()">
+        <h4 class="mb-3 text-center">Create Account</h4>
+        
+        <div class="mb-3">
+          <label class="form-label">Username *</label>
+          <input type="text" class="form-control" name="username" [(ngModel)]="registerData.username" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Birth Date *</label>
+          <input type="date" class="form-control" name="birthDate" [(ngModel)]="registerData.birthDate" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="registerData.email" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-control" name="password" [(ngModel)]="registerData.password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+      </form>
+    } 
+
+    @else {
+      <form (ngSubmit)="onAuthenticate()">
+        <h4 class="mb-3 text-center">Welcome Back</h4>
+        
+        <div class="mb-3">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-control" name="authEmail" [(ngModel)]="authData.email" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-control" name="authPassword" [(ngModel)]="authData.password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Authenticate</button>
+      </form>
+    }
+
+  </div>
+</div>

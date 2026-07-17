@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+/* Fix for ng-bootstrap modal backdrop stacking issues */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}

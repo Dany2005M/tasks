@@ -1,7 +1,9 @@
 package com.example.tasks.controller;
 
 
+import com.example.tasks.dto.UserCredentialsDTO;
 import com.example.tasks.dto.UserDTO;
+import com.example.tasks.dto.UserResponseDTO;
 import com.example.tasks.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
     private final UserService userService;
 
@@ -39,6 +42,11 @@ public class UserController {
     @PostMapping("/multiple-users")
     public List<UserDTO> createUsers(@RequestBody @Valid List<UserDTO> userDTOs) {
         return userService.createUsers(userDTOs);
+    }
+
+    @PostMapping("/login")
+    public UserResponseDTO login(@RequestBody @Valid UserCredentialsDTO credentials){
+        return userService.login(credentials);
     }
 
     @PutMapping("/{id}")

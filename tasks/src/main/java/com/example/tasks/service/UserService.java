@@ -1,7 +1,9 @@
 package com.example.tasks.service;
 
 import com.example.tasks.domain.User;
+import com.example.tasks.dto.UserCredentialsDTO;
 import com.example.tasks.dto.UserDTO;
+import com.example.tasks.dto.UserResponseDTO;
 import com.example.tasks.mapper.TaskMapper;
 import com.example.tasks.mapper.UserMapper;
 import com.example.tasks.repository.UserRepository;
@@ -98,6 +100,18 @@ public class UserService {
         userRepository.deleteById(id);
 
         return getAllUsers();
+    }
+
+    public UserResponseDTO login(UserCredentialsDTO credentials) {
+        User user = userRepository.findByEmail(credentials.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+
+        if(!user.getPassword().equals(credentials.getPassword())){
+            throw new  RuntimeException("Wrong password!");
+        }
+
+        return userMapper.toResponseDTO(user);
+
     }
 
 
