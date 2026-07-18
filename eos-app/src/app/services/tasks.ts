@@ -11,6 +11,10 @@ export class Tasks {
     return this.http.get<any[]>('http://localhost:8080/tasks');
   }
 
+  public searchTasks(searchCriteria: any) {
+    return this.http.get<any[]>('http://localhost:8080/tasks/search', {params: searchCriteria});
+  }
+
   public createTask(task: any) {
     return this.http.post('http://localhost:8080/tasks', task);
   }

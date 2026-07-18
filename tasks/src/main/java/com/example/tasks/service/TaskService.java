@@ -51,6 +51,13 @@ public class TaskService {
                 .toList();
     }
 
+    public List<TaskDTO> searchTasks(String subject, String assignedTo, LocalDate dueDate, String status) {
+        return taskRepository.SearchTasks(subject, assignedTo, dueDate, status)
+                .stream()
+                .map(taskMapper::toDTO)
+                .toList();
+    }
+
     public List<TaskDTO> getTasksSortedByDueDate() {
         log.info("Tasks retrieved sorted by due date!");
 

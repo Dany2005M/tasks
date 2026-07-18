@@ -37,6 +37,8 @@ export class LoginComponent {
         next: (response) => {
           console.log('Login successful:', response);
           this.userService.setLoggedInUser(response.username);
+          sessionStorage.setItem('user', JSON.stringify(response.username));
+          sessionStorage.setItem('userId', JSON.stringify(response.userId));
           this.router.navigate(['/home']);
         },
         error: (error) => {
@@ -51,7 +53,6 @@ export class LoginComponent {
       next: (response) => {
         this.authData.email = this.registerData.email;
         this.authData.password = this.registerData.password;
-        
         this.onAuthenticate();
       },
       error: (error) => {

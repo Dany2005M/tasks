@@ -21,7 +21,7 @@ export class NewTaskComponent implements OnInit {
   formData: any = {
     name: '',
     dueDate: '',
-    userId:78,
+    userId:Number(sessionStorage.getItem('userId')) || null,
     createdByFullName: 'SUMMER_SCHOOL',
     statusType: null
   };

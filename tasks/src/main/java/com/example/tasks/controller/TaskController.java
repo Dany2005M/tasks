@@ -54,6 +54,15 @@ public class TaskController {
         return taskService.getTaskCountGroupedByStatus();
     }
 
+    @GetMapping("/search")
+    public List<TaskDTO> searchTasks(@RequestParam(required = false) String subject,
+                                     @RequestParam(required = false) String assignedTo,
+                                     @RequestParam(required = false) LocalDate dueDate,
+                                     @RequestParam(required = false) String status) {
+
+        return taskService.searchTasks(subject,assignedTo,dueDate,status);
+    }
+
     @PostMapping
     public TaskDTO createTask(@RequestBody @Valid TaskDTO taskDTO) {
         return taskService.createTask(taskDTO);

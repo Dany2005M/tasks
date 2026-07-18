@@ -8,7 +8,7 @@ export class LoggedInGuard {
   private readonly router: Router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-  if(localStorage.getItem('user')!=null){
+  if(sessionStorage.getItem('user')!=null){
     return true;
   }
 

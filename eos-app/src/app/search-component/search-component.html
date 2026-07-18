@@ -1,1 +1,64 @@
-<p>search-component works!</p>
+<div class="container mt-4">
+  <h2 class="mb-4">Search Tasks</h2>
+
+  <form (ngSubmit)="onSearch()" class="row g-3 mb-4 p-4 border rounded shadow-sm bg-light">
+    
+    <div class="col-md-3">
+      <label class="form-label">Subject</label>
+      <input type="text" class="form-control" name="subject" [(ngModel)]="searchParams.subject" placeholder="Enter subject...">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Assigned To</label>
+      <input type="text" class="form-control" name="assignedTo" [(ngModel)]="searchParams.assignedTo" placeholder="Username...">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Due Date</label>
+      <input type="date" class="form-control" name="dueDate" [(ngModel)]="searchParams.dueDate">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" name="status" [(ngModel)]="searchParams.status">
+        <option value="">Any Status</option>
+        
+        @for (status of availableStatuses(); track status.statusTypeId) {
+          <option [value]="status.statusName">{{ status.statusName }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-12 mt-4">
+      <button type="submit" class="btn btn-primary px-4">Search</button>
+      <button type="button" class="btn btn-outline-secondary ms-2" (click)="clearFilters()">Clear</button>
+    </div>
+  </form>
+
+  @if (searchResults().length > 0) {
+    <table class="table table-hover border">
+      <thead class="table-dark">
+        <tr>
+          <th>Subject</th>
+          <th>Assigned To</th>
+          <th>Due Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of searchResults(); track task.id) {
+          <tr>
+            <td>{{ task.name }}</td> 
+            <td>{{ getUsername(task.userId) }}</td> 
+            <td>{{ task.dueDate }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ getStatusName(task.statusTypeId) }}</span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else if (hasSearched) {
+    <div class="alert alert-info">No tasks found matching your search criteria.</div>
+  }
+</div>
