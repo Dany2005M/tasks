@@ -13,11 +13,5 @@ export class App {
 
   private userService = inject(Users);
 
-  username = signal<string | null>(null);
-
-  ngOnInit(){
-    this.userService.currentUser$.subscribe(user => {
-      this.username.set(user);
-    });
-  }
+  username = this.userService.currentUser;
 }

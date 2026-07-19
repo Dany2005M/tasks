@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -8,10 +8,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class Users {
   private http = inject(HttpClient);
   
-  private userSubject = new BehaviorSubject<string | null>(null);
+  private userSignal = signal<string | null>(null);
 
 
-  currentUser$ = this.userSubject.asObservable();
+  currentUser = this.userSignal.asReadonly();
   public createUser(user: any){
     return this.http.post('http://localhost:8080/users', user);
   }
@@ -25,6 +25,6 @@ export class Users {
   }
 
   public setLoggedInUser(username: string){
-    this.userSubject.next(username);
+    this.userSignal.set(username);
   }
 }
