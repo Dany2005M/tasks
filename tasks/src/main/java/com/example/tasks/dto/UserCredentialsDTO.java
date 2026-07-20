@@ -11,7 +11,6 @@ import lombok.*;
 @Builder
 public class UserCredentialsDTO {
     @NotBlank
-    @Email(message = "Must be a valid email format")
     private String email;
     @NotBlank(message = "Password is required")
     private String password;
