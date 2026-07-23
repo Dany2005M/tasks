@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
+@CrossOrigin
 public class LoginRegisterController {
     private final LoginRegisterService loginRegisterService;
 

@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import LocalStorageUtils from '../utils/localStorageUtils';
 
 @Injectable({
   providedIn: 'root',
@@ -8,11 +9,11 @@ export class LoggedInGuard {
   private readonly router: Router = inject(Router);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-  if(sessionStorage.getItem('user')!=null){
+  if(LocalStorageUtils.getItem(LocalStorageUtils.tokenKey)){
     return true;
   }
 
-  this.router.navigate(['/login']);
+  this.router.navigate(['/login']).then();
   return false;
 }
 

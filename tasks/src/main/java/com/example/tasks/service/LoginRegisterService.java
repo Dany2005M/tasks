@@ -39,7 +39,7 @@ public class LoginRegisterService {
                 .orElse(null);
 
         if(dbPassword != null && dbPassword.getPassword().equals(hashPassword)) {
-            return ResponseEntity.ok(createJWToken(userCredentialsDTO.getEmail()));
+            return ResponseEntity.ok(createJWToken(userCredentialsDTO.getEmail(), dbPassword.getUsername()));
         }
         else{
             return ResponseEntity.status(401).build();
@@ -69,11 +69,12 @@ public class LoginRegisterService {
 
     }
 
-    private String createJWToken(String email) throws JoseException {
+    private String createJWToken(String email, String username) throws JoseException {
         JwtClaims claims = new JwtClaims();
         claims.setIssuedAtToNow();
         claims.setExpirationTimeMinutesInTheFuture((float) Long.parseLong(jwtExpiration) / (1000 * 60));
         claims.setSubject(email);
+        claims.setStringClaim("username", username);
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);

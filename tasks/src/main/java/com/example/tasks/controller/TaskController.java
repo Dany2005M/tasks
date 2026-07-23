@@ -15,7 +15,7 @@ import java.util.Map;
 @RequestMapping("/tasks")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin
+@CrossOrigin()
 public class TaskController {
     private final TaskService taskService;
 

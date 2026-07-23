@@ -2,6 +2,10 @@ import { Component, inject } from '@angular/core';
 import { Users } from '../services/users';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Login } from '../services/login';
+import { LoginDTO } from '../interfaces/loginDTO';
+import LocalStorageUtils from '../utils/localStorageUtils';
+import { RegisterDTO } from '../interfaces/registerDTO';
 
 @Component({
   selector: 'app-login-component',
@@ -10,55 +14,79 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login-component.css',
 })
 export class LoginComponent {
+  
+
   isLoginMode: boolean = true;
-  private userService = inject(Users);
-  private router = inject(Router);
-
-  authData: any = {
-    email: '',
-    password: ''
-  };
-
-  registerData: any = {
-    username: '',
-    birthDate: '',
+  userToLogin: LoginDTO = {} as LoginDTO;
+  userToRegister: RegisterDTO ={
     email: '',
     password: '',
-    isInternal: false,
-    createdByFullName: 'SUMMER_SCHOOL'
+    username: '',
+    birthDate: ''
   };
+  private userService = inject(Users);
+  private router = inject(Router);
+  private loginService = inject(Login);
 
-  setMode(mode: 'login' | 'register'): void {
-    this.isLoginMode = (mode === 'login');
-  }
+  login() : void {
+      const encodedeUserDTO: LoginDTO = {
+          email: btoa(this.userToLogin.email || ''),
+          password: btoa(this.userToLogin.password || '')
+      }
 
-  onAuthenticate(): void {
-      this.userService.loginUser(this.authData).subscribe({
+      this.loginService.postLogin(encodedeUserDTO).subscribe({
+          next: (response) => {
+              console.log('Login successful:', response);
+
+              if(response.startsWith('403')){
+                console.error('Login failed: Invalid credentials');
+                return;
+              }
+
+              LocalStorageUtils.setItem(LocalStorageUtils.tokenKey, response);
+              
+              const tokenPayloadBase64 = response.split('.')[1];
+              const decodePayload = JSON.parse(atob(tokenPayloadBase64));
+
+              LocalStorageUtils.setItem('username', decodePayload.username);
+
+              this.userService.setLoggedInUser(decodePayload.username);
+
+              this.router.navigate(['/home']);
+            
+                
+
+            },
+            error: error => {
+                console.error('Login failed:', error);
+            }
+      });
+    }
+
+    register(): void{
+      const encodedRegisterDTO: RegisterDTO = {
+      email: btoa(this.userToRegister.email),
+      password: btoa(this.userToRegister.password),
+      username: this.userToRegister.username,
+      birthDate: this.userToRegister.birthDate
+      };
+
+      this.loginService.postRegister(encodedRegisterDTO).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
-          this.userService.setLoggedInUser(response.username);
-          sessionStorage.setItem('user', JSON.stringify(response.username));
-          sessionStorage.setItem('userId', JSON.stringify(response.userId));
-          this.router.navigate(['/home']);
+          console.log('Registration successful!', response);
+          alert('Account created successfully! You can now log in.');
+          this.isLoginMode = true;
         },
         error: (error) => {
-          console.error('Login failed:', error);
-          alert('Login failed. Please check your credentials and try again.');
+        if (error.status === 409) {
+          console.error('Registration failed: Email already exists');
+          alert('This email is already in use.');
+        } else {
+          console.error('An unexpected error occurred:', error);
         }
-      });
+      }
+      })
+    }
+
   }
 
-  onRegister(): void {
-    this.userService.createUser(this.registerData).subscribe({
-      next: (response) => {
-        this.authData.email = this.registerData.email;
-        this.authData.password = this.registerData.password;
-        this.onAuthenticate();
-      },
-      error: (error) => {
-        console.error('Registration failed:', error);
-        alert('Registration failed. Please check your details and try again.');
-      }
-    });
-  }
-}

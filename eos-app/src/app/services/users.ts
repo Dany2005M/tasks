@@ -8,8 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class Users {
   private http = inject(HttpClient);
   
-  private userSignal = signal<string | null>(null);
-
+private userSignal = signal<string | null>(localStorage.getItem('username'));
 
   currentUser = this.userSignal.asReadonly();
   public createUser(user: any){
@@ -24,7 +23,7 @@ export class Users {
     return this.http.post<any>('http://localhost:8080/users/login', credentials);
   }
 
-  public setLoggedInUser(username: string){
+  public setLoggedInUser(username: string | null){
     this.userSignal.set(username);
   }
 }

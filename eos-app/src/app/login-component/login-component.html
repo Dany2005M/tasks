@@ -1,69 +1,65 @@
-<div class="container d-flex justify-content-center align-items-center mt-5">
-  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+<div class="container mt-5">
+  <div class="card shadow-sm p-4 mx-auto" style="max-width: 400px;">
     
-    <div class="btn-group w-100 mb-4" role="group">
-      <button 
-        type="button" 
-        class="btn" 
-        [class.btn-primary]="!isLoginMode" 
-        [class.btn-outline-primary]="isLoginMode"
-        (click)="setMode('register')">
-        Register
-      </button>
-      <button 
-        type="button" 
-        class="btn" 
-        [class.btn-primary]="isLoginMode" 
-        [class.btn-outline-primary]="!isLoginMode"
-        (click)="setMode('login')">
-        Authenticated
-      </button>
-    </div>
-
-    @if (!isLoginMode) {
-      <form (ngSubmit)="onRegister()">
-        <h4 class="mb-3 text-center">Create Account</h4>
-        
+    @if (isLoginMode) {
+      <h4 class="mb-4 text-center">Login to Tasks</h4>
+      
+      <form (ngSubmit)="login()" #loginForm="ngForm">
         <div class="mb-3">
-          <label class="form-label">Username *</label>
-          <input type="text" class="form-control" name="username" [(ngModel)]="registerData.username" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Birth Date *</label>
-          <input type="date" class="form-control" name="birthDate" [(ngModel)]="registerData.birthDate" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Email *</label>
-          <input type="email" class="form-control" name="email" [(ngModel)]="registerData.email" required>
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="userToLogin.email" required>
         </div>
 
         <div class="mb-4">
-          <label class="form-label">Password *</label>
-          <input type="password" class="form-control" name="password" [(ngModel)]="registerData.password" required>
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" [(ngModel)]="userToLogin.password" required>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Register</button>
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">
+          Login
+        </button>
       </form>
+
+      <div class="text-center mt-3">
+        <span class="text-muted">Don't have an account? </span>
+        <a href="javascript:void(0)" (click)="isLoginMode = false" class="text-decoration-none">Register here</a>
+      </div>
     } 
 
     @else {
-      <form (ngSubmit)="onAuthenticate()">
-        <h4 class="mb-3 text-center">Welcome Back</h4>
+      <h4 class="mb-4 text-center">Create an Account</h4>
+      
+      <form (ngSubmit)="register()" #registerForm="ngForm">
         
         <div class="mb-3">
-          <label class="form-label">Email *</label>
-          <input type="email" class="form-control" name="authEmail" [(ngModel)]="authData.email" required>
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="regEmail" [(ngModel)]="userToRegister.email" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="regPassword" [(ngModel)]="userToRegister.password" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" name="regUsername" [(ngModel)]="userToRegister.username" required>
         </div>
 
         <div class="mb-4">
-          <label class="form-label">Password *</label>
-          <input type="password" class="form-control" name="authPassword" [(ngModel)]="authData.password" required>
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" name="regBirthDate" [(ngModel)]="userToRegister.birthDate" required>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Authenticate</button>
+        <button type="submit" class="btn btn-success w-100" [disabled]="registerForm.invalid">
+          Register
+        </button>
       </form>
+
+      <div class="text-center mt-3">
+        <span class="text-muted">Already have an account? </span>
+        <a href="javascript:void(0)" (click)="isLoginMode = true" class="text-decoration-none">Login here</a>
+      </div>
     }
 
   </div>
