@@ -17,9 +17,9 @@
 
         <div class="mb-3">
       <label class="form-label">Status</label>
-      <select class="form-select" name="statusType" [(ngModel)]="formData.statusType">
+      <select class="form-select" name="statusType" [(ngModel)]="formData.statusTypeId">
         @for (status of availableStatuses(); track status.statusTypeId) {
-          <option [ngValue]="status">{{ status.statusName }}</option>
+          <option [value]="status.statusTypeId">{{ status.statusName }}</option>
         }
       </select>
     </div>

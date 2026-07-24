@@ -49,6 +49,8 @@ export class LoginComponent {
               const decodePayload = JSON.parse(atob(tokenPayloadBase64));
 
               LocalStorageUtils.setItem('username', decodePayload.username);
+              
+              LocalStorageUtils.setItem('userId', decodePayload.userId);
 
               this.userService.setLoggedInUser(decodePayload.username);
 

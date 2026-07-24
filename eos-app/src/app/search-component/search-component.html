@@ -46,7 +46,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (task of searchResults(); track task.id) {
+        @for (task of searchResults(); track task.taskId) {
           <tr>
             <td>{{ task.name }}</td> 
             <td>{{ getUsername(task.userId) }}</td> 

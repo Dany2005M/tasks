@@ -3,6 +3,8 @@ import { Tasks } from '../services/tasks';
 import { NewTaskComponent } from '../new-task-component/new-task-component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Statuses } from '../services/statuses';
+import { TaskDTO } from '../interfaces/TaskDTO';
+import { StatusDTO } from '../interfaces/StatusDTO';
 
 @Component({
   selector: 'app-my-task-component',
@@ -15,15 +17,15 @@ export class MyTaskComponent implements OnInit{
   private modalService = inject(NgbModal);
   private statusService = inject(Statuses);
 
-  tasks = signal<any[]>([]);
+  tasks = signal<TaskDTO[]>([]);
 
-  availableStatuses = signal<any[]>([]);
+  availableStatuses = signal<StatusDTO[]>([]);
   ngOnInit(): void {
     this.loadTasks();
-    this.statusService.getStatuses().subscribe(res => this.availableStatuses.set(res));
+    this.statusService.getStatuses().subscribe((res: StatusDTO[]) => this.availableStatuses.set(res));
   }
 
-  getStatusName(id: string): string {
+  getStatusName(id: string | null): string {
     const status = this.availableStatuses().find(s => s.statusTypeId === id);
     return status ? status.statusName : 'Loading...';
   }
@@ -31,7 +33,7 @@ export class MyTaskComponent implements OnInit{
   loadTasks() : void {
     this.taskService.getTasks().subscribe(res => {
       console.log('API Response:', res);
-      const sortedTasks = res.sort((a: any, b: any) => {
+      const sortedTasks = res.sort((a: TaskDTO, b: TaskDTO) => {
         const dateA = new Date(a.dueDate).getTime();
         const dateB = new Date(b.dueDate).getTime();
         
@@ -41,7 +43,7 @@ export class MyTaskComponent implements OnInit{
     });
   }
 
-  openTaskModal(task: any = null) : void {
+  openTaskModal(task: TaskDTO | null = null) : void {
     const modalRef = this.modalService.open(NewTaskComponent, { size: 'lg' });
     modalRef.componentInstance.taskToEdit = task;
   
@@ -64,7 +66,9 @@ export class MyTaskComponent implements OnInit{
     });
   }
 
-  deleteTask(taskId: number) : void {
+  deleteTask(taskId: number | undefined) : void {
+    if(!taskId) return;
+
     if(confirm('Are you sure you want to delete this task?')) {
       this.taskService.deleteTask(taskId).subscribe(() => {
         this.loadTasks();

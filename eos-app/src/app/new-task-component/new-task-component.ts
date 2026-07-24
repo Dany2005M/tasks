@@ -3,6 +3,9 @@ import { Tasks } from '../services/tasks';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { Statuses } from '../services/statuses';
+import { TaskDTO } from '../interfaces/TaskDTO';
+import { StatusDTO } from '../interfaces/StatusDTO';
+import LocalStorageUtils from '../utils/localStorageUtils';
 @Component({
   selector: 'app-new-task-component',
   imports: [FormsModule],
@@ -10,20 +13,20 @@ import { Statuses } from '../services/statuses';
   styleUrl: './new-task-component.css',
 })
 export class NewTaskComponent implements OnInit {
-  @Input() taskToEdit: any;
+  @Input() taskToEdit: TaskDTO | null = null;
   activeModal = inject(NgbActiveModal);
   isEditMode = false;
 
   private taskService = inject(Tasks);
   private statusService = inject(Statuses);
 
-  availableStatuses = signal<any[]>([]);
-  formData: any = {
+  availableStatuses = signal<StatusDTO[]>([]);
+  formData: TaskDTO = {
     name: '',
     dueDate: '',
-    userId:Number(sessionStorage.getItem('userId')) || null,
+    userId:Number(LocalStorageUtils.getItem('userId')) || null,
     createdByFullName: 'SUMMER_SCHOOL',
-    statusType: null
+    statusTypeId: null
   };
 
   ngOnInit(): void {
@@ -34,28 +37,17 @@ export class NewTaskComponent implements OnInit {
     if (this.taskToEdit) {
       this.isEditMode = true;
       this.formData = { ...this.taskToEdit };
-
-      if(this.taskToEdit.statusType) {
-        this.formData.statusType = this.availableStatuses().find(status => status.statusTypeId === this.taskToEdit.statusType.statusTypeId);
-      }
       
     }
     else if(this.availableStatuses().length > 0) {
-        this.formData.statusType = this.availableStatuses()[0];
+        this.formData.statusTypeId = this.availableStatuses()[0]?.statusTypeId || null;
       }
   });
   }
 
     saveTask(): void {
-    const payload = { ...this.formData };
-console.log('Sending this to backend:', payload); 
-    if (payload.statusType && payload.statusType.statusTypeId) {
-      payload.statusTypeId = payload.statusType.statusTypeId;
-    }
-    
-    delete payload.statusType;
-
-    this.activeModal.close(payload);
+    console.log('Sending this to backend:', this.formData); 
+    this.activeModal.close(this.formData);
   }
 
 

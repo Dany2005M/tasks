@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Tasks } from '../services/tasks';
 import { Statuses } from '../services/statuses';
 import { Users } from '../services/users';
+import { TaskDTO } from '../interfaces/TaskDTO';
 
 @Component({
   selector: 'app-search-component',
@@ -27,7 +28,7 @@ export class SearchComponent implements OnInit {
     status: ''
   };
 
-  searchResults = signal<any[]>([]);
+  searchResults = signal<TaskDTO[]>([]);
   hasSearched: boolean = false;
 
 ngOnInit(): void {
@@ -45,11 +46,13 @@ ngOnInit(): void {
   });
 }
 
-  getStatusName(statusId: string): string {
+  getStatusName(statusId: string | null | undefined): string {
+    if(!statusId) return 'No Status';
     return this.statusDictionary[statusId] || 'Loading...';
   }
 
-  getUsername(userId: number): string {
+  getUsername(userId: number | null | undefined): string {
+    if(!userId) return 'Unassigned';
     return this.userDictionary[userId] || 'Loading...';
   }
 
