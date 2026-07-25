@@ -1,8 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
 import LocalStorageUtils from '../utils/localStorageUtils';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+import { Users } from './users';
 
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  const userService = inject(Users);
+
   if(req.url.includes('login') || req.url.includes('register')){
     return next(req);
   }
@@ -20,6 +26,20 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
     processedRequest = req;
   }
 
-  return next(processedRequest);
+  return next(processedRequest).pipe(
+    catchError((error) => {
+      if(error.status === 401 || error.status === 403) {
+        console.warn('Expired session or access denied. Redirecting...');
+
+        LocalStorageUtils.clear();
+        
+        userService.setLoggedInUser(null);
+
+        router.navigate(['/login']);
+
+      }
+      return throwError(() => error);
+    })
+  );
 
 }

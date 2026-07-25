@@ -12,4 +12,8 @@ export default class LocalStorageUtils {
     static deleteItem(key: string): void {
         localStorage.removeItem(key);
     }
+
+    static clear(): void {
+        localStorage.clear();
+    }
 }

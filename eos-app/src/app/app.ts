@@ -12,6 +12,7 @@ export class App {
   protected readonly title = signal('eos-app');
 
   private userService = inject(Users);
-
   username = this.userService.currentUser;
+
+  isMenuCollapsed = true;
 }

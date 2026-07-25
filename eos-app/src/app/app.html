@@ -2,20 +2,20 @@
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/home">EOS App</a>
     
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
+          <a class="nav-link" routerLink="/home" routerLinkActive="active" (click)="isMenuCollapsed = true">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/my-task" routerLinkActive="active">My Tasks</a>
+          <a class="nav-link" routerLink="/my-task" routerLinkActive="active" (click)="isMenuCollapsed = true">My Tasks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
+          <a class="nav-link" routerLink="/search" routerLinkActive="active" (click)="isMenuCollapsed = true">Search</a>
         </li>
       </ul>
       
@@ -26,7 +26,7 @@
           </li>
         } @else {
           <li class="nav-item">
-            <a class="nav-link" routerLink="/login" routerLinkActive="active">Login / Register</a>
+            <a class="nav-link" routerLink="/login" routerLinkActive="active" (click)="isMenuCollapsed = true">Login / Register</a>
           </li>
         }
       </ul>
