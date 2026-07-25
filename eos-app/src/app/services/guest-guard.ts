@@ -7,7 +7,6 @@ import LocalStorageUtils from '../utils/localStorageUtils';
 })
 export class GuestGuard {
   private readonly router: Router = inject(Router);
-  private readonly token: string | null = LocalStorageUtils.getItem(LocalStorageUtils.tokenKey);
 
   canActivate(): boolean {
 
