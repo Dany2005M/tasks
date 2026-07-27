@@ -35,11 +35,15 @@ public class LoginRegisterService {
         userCredentialsDTO.setPassword(new String(Base64.getDecoder().decode(userCredentialsDTO.getPassword())));
 
         String hashPassword = Credential.MD5.digest(userCredentialsDTO.getPassword()).replaceFirst("MD5:", "").toLowerCase();
-        User dbPassword = userRepository.findByEmail(userCredentialsDTO.getEmail())
+        User dbUser = userRepository.findByEmail(userCredentialsDTO.getEmail())
                 .orElse(null);
 
-        if(dbPassword != null && dbPassword.getPassword().equals(hashPassword)) {
-            return ResponseEntity.ok(createJWToken(userCredentialsDTO.getEmail(), dbPassword.getUsername(), dbPassword.getUserId()));
+
+
+        if(dbUser != null && dbUser.getPassword().equals(hashPassword)) {
+            String roleName = dbUser.getRole().getRoleName();
+            return ResponseEntity.ok(createJWToken(userCredentialsDTO.getEmail(), dbUser.getUsername(), dbUser.getUserId(), roleName));
+
         }
         else{
             return ResponseEntity.status(401).build();
@@ -69,13 +73,14 @@ public class LoginRegisterService {
 
     }
 
-    private String createJWToken(String email, String username, Long userId) throws JoseException {
+    private String createJWToken(String email, String username, Long userId, String role) throws JoseException {
         JwtClaims claims = new JwtClaims();
         claims.setIssuedAtToNow();
         claims.setExpirationTimeMinutesInTheFuture((float) Long.parseLong(jwtExpiration) / (1000 * 60));
         claims.setSubject(email);
         claims.setStringClaim("username", username);
         claims.setClaim("userId", userId);
+        claims.setStringClaim("role", role);
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);

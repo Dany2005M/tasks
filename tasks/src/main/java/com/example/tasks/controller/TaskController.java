@@ -4,6 +4,7 @@ import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
+    @PreAuthorize("@permissions_checker.hasPermission('TASK', 'READ')")
     public List<TaskDTO> getAllTasks() {
         return taskService.getAllTasks();
     }
@@ -64,6 +66,7 @@ public class TaskController {
     }
 
     @PostMapping
+    @PreAuthorize("@permissions_checker.hasPermission('TASK','CREATE')")
     public TaskDTO createTask(@RequestBody @Valid TaskDTO taskDTO) {
         return taskService.createTask(taskDTO);
     }

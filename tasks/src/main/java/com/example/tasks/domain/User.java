@@ -55,5 +55,9 @@ public class User {
     @Column(name = "CREATED_BY_FULLNAME")
     private String createdByFullName;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Roles role;
+
 
 }

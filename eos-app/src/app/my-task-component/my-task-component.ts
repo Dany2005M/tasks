@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Statuses } from '../services/statuses';
 import { TaskDTO } from '../interfaces/TaskDTO';
 import { StatusDTO } from '../interfaces/StatusDTO';
+import LocalStorageUtils from '../utils/localStorageUtils';
 
 @Component({
   selector: 'app-my-task-component',
@@ -20,9 +21,13 @@ export class MyTaskComponent implements OnInit{
   tasks = signal<TaskDTO[]>([]);
 
   availableStatuses = signal<StatusDTO[]>([]);
+
+  isAdmin: boolean = false;
+
   ngOnInit(): void {
     this.loadTasks();
     this.statusService.getStatuses().subscribe((res: StatusDTO[]) => this.availableStatuses.set(res));
+    this.isAdmin = this.getRole() === 'ADMIN';
   }
 
   getStatusName(id: string | null): string {
@@ -75,4 +80,43 @@ export class MyTaskComponent implements OnInit{
       });
     }
   }
+
+  getRole(): string | null {
+    const token = LocalStorageUtils.getItem("TASKS_TOKEN"); 
+
+    if (!token) {
+        return null;
+    }
+
+    try {
+   
+        const tokenPayloadBase64 = token.split('.')[1];
+        const decodePayload = JSON.parse(atob(tokenPayloadBase64));
+        
+        return decodePayload.role; 
+    } catch (error) {
+        console.error("Eroare la decodarea token-ului:", error);
+        return null;
+    }
+
+    
+}
+  getId(): number | null {
+      const token = LocalStorageUtils.getItem("TASKS_TOKEN"); 
+
+    if (!token) {
+        return null;
+    }
+
+    try {
+   
+        const tokenPayloadBase64 = token.split('.')[1];
+        const decodePayload = JSON.parse(atob(tokenPayloadBase64));
+        
+        return decodePayload.userId; 
+    } catch (error) {
+        console.error("Eroare la decodarea token-ului:", error);
+        return null;
+    }
+    }
 }
