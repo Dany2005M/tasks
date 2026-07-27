@@ -38,11 +38,6 @@ export class LoginComponent {
           next: (response) => {
               console.log('Login successful:', response);
 
-              if(response.startsWith('403')){
-                console.error('Login failed: Invalid credentials');
-                return;
-              }
-
               LocalStorageUtils.setItem(LocalStorageUtils.tokenKey, response);
               
               const tokenPayloadBase64 = response.split('.')[1];
@@ -54,12 +49,15 @@ export class LoginComponent {
 
               this.userService.setLoggedInUser(decodePayload.username);
 
-              this.router.navigate(['/home']);
-            
-                
+              this.router.navigate(['/home']);  
 
             },
             error: error => {
+              if(error.status === 401){
+                console.error('Login failed: Invalid credentials ', error);
+                alert("Invalid credentials! Please try again.");
+              }
+              else
                 console.error('Login failed:', error);
             }
       });
