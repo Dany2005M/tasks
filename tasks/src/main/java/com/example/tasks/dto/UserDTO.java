@@ -16,6 +16,7 @@ public class UserDTO {
     private Boolean isInternal;
     private String email;
     private String password;
+    private Long roleId;
     private LocalDate creationDate;
     private String createdBy;
     private LocalDate lastUpdateDate;

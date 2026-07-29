@@ -17,6 +17,12 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/search" routerLinkActive="active" (click)="isMenuCollapsed = true">Search</a>
         </li>
+    
+      @if(isAdmin()){
+        <li class="nav-item">
+            <a class="nav-link text-warning" routerLink="/admin" routerLinkActive="active" (click)="isMenuCollapsed = true">Admin Dashboard</a>
+          </li>
+      }
       </ul>
       
       <ul class="navbar-nav">

@@ -26,7 +26,7 @@ public class PermissionChecker {
 
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if(user == null){
+        if(user == null || user.getRole() == null) {
             return false;
         }
 

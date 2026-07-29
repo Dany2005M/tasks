@@ -6,10 +6,12 @@ import { NewTaskComponent } from './new-task-component/new-task-component';
 import { LoginComponent } from './login-component/login-component';
 import { LoggedInGuard } from './services/logged-in-guard';
 import { GuestGuard } from './services/guest-guard';
+import { AdminComponent } from './admin-component/admin-component';
 export const routes: Routes = [
 { path: 'home', component: HomeComponent, canActivate: [LoggedInGuard] },
 {path: 'my-task', component: MyTaskComponent, canActivate: [LoggedInGuard]},
 {path: 'new-task', component: NewTaskComponent,canActivate: [LoggedInGuard]},
 {path: 'search', component: SearchComponent,canActivate: [LoggedInGuard]},
-{path: 'login', component: LoginComponent,canActivate: [GuestGuard]}
+{path: 'login', component: LoginComponent,canActivate: [GuestGuard]},
+{path: 'admin', component: AdminComponent, canActivate: [LoggedInGuard]}
 ];

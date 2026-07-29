@@ -9,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserResponseDTO {
-    public Long userId;
+    private Long userId;
 
-    public String username;
+    private String username;
 
-    public String email;
+    private String email;
 }

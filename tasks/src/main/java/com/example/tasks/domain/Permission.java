@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Permissions {
+public class Permission {
     @Id
     @Column(name = "permission_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

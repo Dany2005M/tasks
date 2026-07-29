@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/tasks/login").permitAll()
                         .requestMatchers("/tasks/register").permitAll()
                         .anyRequest().authenticated())
@@ -46,7 +47,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 

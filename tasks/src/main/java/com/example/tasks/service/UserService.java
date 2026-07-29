@@ -1,11 +1,13 @@
 package com.example.tasks.service;
 
+import com.example.tasks.domain.Role;
 import com.example.tasks.domain.User;
 import com.example.tasks.dto.UserCredentialsDTO;
 import com.example.tasks.dto.UserDTO;
 import com.example.tasks.dto.UserResponseDTO;
 import com.example.tasks.mapper.TaskMapper;
 import com.example.tasks.mapper.UserMapper;
+import com.example.tasks.repository.RoleRepository;
 import com.example.tasks.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final TaskMapper taskMapper;
 
@@ -100,6 +103,19 @@ public class UserService {
         userRepository.deleteById(id);
 
         return getAllUsers();
+    }
+
+    public void changeUserRole(Long userId, Long roleId) {
+        log.info("User with id {} changed role!", userId);
+
+        User user = userRepository.findById(userId)
+                .orElse(null);
+        Role role = roleRepository.findById(roleId)
+                .orElse(null);
+        if(user != null && role != null){
+            user.setRole(role);
+            userRepository.save(user);
+        }
     }
 
     public UserResponseDTO login(UserCredentialsDTO credentials) {

@@ -18,6 +18,7 @@ public class UserMapper {
                 .birthDate(user.getBirthDate())
                 .isInternal(user.getIsInternal())
                 .email(user.getEmail())
+                .roleId(user.getRole().getRoleId())
                 .creationDate(user.getCreationDate())
                 .createdBy(user.getCreatedBy())
                 .lastUpdateDate(user.getLastUpdateDate())

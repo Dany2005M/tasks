@@ -2,6 +2,7 @@ package com.example.tasks.service;
 
 import com.example.tasks.domain.StatusType;
 import com.example.tasks.domain.Task;
+import com.example.tasks.domain.User;
 import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.mapper.TaskMapper;
 import com.example.tasks.repository.StatusTypeRepository;
@@ -9,6 +10,8 @@ import com.example.tasks.repository.TaskRepository;
 import com.example.tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,7 +31,22 @@ public class TaskService {
     public List<TaskDTO> getAllTasks() {
         log.info("Tasks retrieved!");
 
-        return taskRepository.findAll()
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User loggedUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+
+        List<Task> tasks;
+
+        if(loggedUser.getRole() != null && "ADMIN".equalsIgnoreCase(loggedUser.getRole().getRoleName())){
+            tasks = taskRepository.findAll();
+        }
+        else{
+            tasks = taskRepository.findByUser_UserId(loggedUser.getUserId());
+        }
+
+        return tasks
                 .stream()
                 .map(taskMapper::toDTO)
                 .toList();

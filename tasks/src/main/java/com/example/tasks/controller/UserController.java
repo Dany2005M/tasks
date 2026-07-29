@@ -7,6 +7,7 @@ import com.example.tasks.dto.UserResponseDTO;
 import com.example.tasks.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,6 +53,12 @@ public class UserController {
     @PutMapping("/{id}")
     public UserDTO updateUser(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
         return userService.updateUser(id, userDTO);
+    }
+
+    @PatchMapping("/{id}/role")
+    @PreAuthorize("@permissions_checker.hasPermission('USER', 'UPDATE')")
+    public void changeRole(@PathVariable Long id, @RequestParam Long roleId) {
+        userService.changeUserRole(id, roleId);
     }
 
     @DeleteMapping

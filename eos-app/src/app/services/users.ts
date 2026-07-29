@@ -26,4 +26,8 @@ private userSignal = signal<string | null>(localStorage.getItem('username'));
   public setLoggedInUser(username: string | null){
     this.userSignal.set(username);
   }
+
+  public changeRole(userId: number, roleId: number): Observable<void> {
+    return this.http.patch<void>(`http://localhost:8080/users/${userId}/role?roleId=${roleId}`, {})
+  }
 }

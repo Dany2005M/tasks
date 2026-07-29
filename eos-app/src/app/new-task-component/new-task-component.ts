@@ -32,8 +32,7 @@ export class NewTaskComponent implements OnInit {
   ngOnInit(): void {
     this.statusService.getStatuses().subscribe((statuses) => {
       this.availableStatuses.set(statuses);
-    
-
+  
     if (this.taskToEdit) {
       this.isEditMode = true;
       this.formData = { ...this.taskToEdit };
