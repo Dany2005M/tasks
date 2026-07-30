@@ -105,6 +105,7 @@ public class UserService {
         return getAllUsers();
     }
 
+    @Transactional
     public void changeUserRole(Long userId, Long roleId) {
         log.info("User with id {} changed role!", userId);
 
