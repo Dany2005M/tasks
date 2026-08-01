@@ -1,10 +1,12 @@
 package com.example.tasks.service;
 
 
+import com.example.tasks.domain.Role;
 import com.example.tasks.domain.User;
 import com.example.tasks.dto.UserCredentialsDTO;
 import com.example.tasks.dto.UserDTO;
 import com.example.tasks.mapper.UserMapper;
+import com.example.tasks.repository.RoleRepository;
 import com.example.tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.jetty.util.security.Credential;
@@ -26,6 +28,7 @@ import java.util.Base64;
 public class LoginRegisterService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
 
     @Value("${jwt.secret: }") String jwtSecret;
     @Value("${jwt.expiration.ms: }") String jwtExpiration;
@@ -66,7 +69,7 @@ public class LoginRegisterService {
         newUser.setEmail(decodedEmail);
         newUser.setUsername(userDTO.getUsername());
         newUser.setBirthDate(userDTO.getBirthDate());
-
+        roleRepository.findByRoleName("USER").ifPresent(newUser::setRole);
         userRepository.save(newUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

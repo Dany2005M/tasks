@@ -29,4 +29,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                            @Param("assignedTo") String assignedTo,
                            @Param("dueDate") LocalDate dueDate,
                            @Param("status") String status);
+
+    @Query("SELECT t FROM Task t WHERE t.user.userId = :userId " +
+            "AND t.statusType.statusName NOT IN ('Done', 'Cancelled') ")
+    List<Task> findActionableTasksForUser(@Param("userId") Long userId);
+
+
 }

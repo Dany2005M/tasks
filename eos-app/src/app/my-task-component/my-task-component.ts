@@ -6,10 +6,11 @@ import { Statuses } from '../services/statuses';
 import { TaskDTO } from '../interfaces/TaskDTO';
 import { StatusDTO } from '../interfaces/StatusDTO';
 import LocalStorageUtils from '../utils/localStorageUtils';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-my-task-component',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './my-task-component.html',
   styleUrl: './my-task-component.css',
 })
@@ -118,5 +119,20 @@ export class MyTaskComponent implements OnInit{
         console.error("Eroare la decodarea token-ului:", error);
         return null;
     }
+    }
+
+    onStatusChange(taskId: number | undefined, newStatusId: string): void {
+      if(!taskId || !newStatusId) return;
+
+      this.taskService.updateTaskStatus(taskId, newStatusId).subscribe({
+        next: () => {
+          this.loadTasks();
+        },
+        error: (err) => {
+          alert('Error updating task status: ' + err.message);
+
+          this.loadTasks();
+        }
+      });
     }
 }

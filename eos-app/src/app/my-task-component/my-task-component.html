@@ -13,9 +13,16 @@
         
         <div class="task-header">
           <h3 class="task-title">{{task.name}}</h3>
-          <span class="status-badge">
-            {{ getStatusName(task.statusTypeId) }}
-          </span>
+          <select class="form-select form-select-sm w-auto" 
+                  [ngModel]="task.statusTypeId" 
+                  (ngModelChange)="onStatusChange(task.taskId, $event)">
+            @for (status of availableStatuses(); track status.statusTypeId) {
+              <option [value]="status.statusTypeId"
+                      [disabled]="!isAdmin && status.statusName !== 'Pending' && status.statusName !== 'In Progress' && status.statusName !== 'Review'">
+                {{ status.statusName }}
+              </option>
+            }
+          </select>
         </div>
 
         <div class="task-body">

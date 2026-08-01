@@ -6,6 +6,8 @@ import { Statuses } from '../services/statuses';
 import { TaskDTO } from '../interfaces/TaskDTO';
 import { StatusDTO } from '../interfaces/StatusDTO';
 import LocalStorageUtils from '../utils/localStorageUtils';
+import { Users } from '../services/users';
+import { UserDTO } from '../interfaces/UserDTO';
 @Component({
   selector: 'app-new-task-component',
   imports: [FormsModule],
@@ -19,12 +21,14 @@ export class NewTaskComponent implements OnInit {
 
   private taskService = inject(Tasks);
   private statusService = inject(Statuses);
+  private userService = inject(Users);
 
   availableStatuses = signal<StatusDTO[]>([]);
+  availableUsers = signal<UserDTO[]>([]);
   formData: TaskDTO = {
     name: '',
     dueDate: '',
-    userId:Number(LocalStorageUtils.getItem('userId')) || null,
+    userId:null,
     createdByFullName: 'SUMMER_SCHOOL',
     statusTypeId: null
   };
@@ -42,6 +46,9 @@ export class NewTaskComponent implements OnInit {
         this.formData.statusTypeId = this.availableStatuses()[0]?.statusTypeId || null;
       }
   });
+    this.userService.getUsers().subscribe((users) => {
+      this.availableUsers.set(users);
+    })
   }
 
     saveTask(): void {

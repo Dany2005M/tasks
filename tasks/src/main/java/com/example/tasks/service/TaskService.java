@@ -10,9 +10,11 @@ import com.example.tasks.repository.TaskRepository;
 import com.example.tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -115,24 +117,54 @@ public class TaskService {
     }
 
     public TaskDTO updateTaskStatus(Long taskId, String statusId) {
-        log.info("Task status with id {} updated!", taskId);
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User currentUser = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("User not found!"));
 
         Task task = taskRepository.findById(taskId)
-                .orElse(null);
+                        .orElseThrow(() -> new RuntimeException("Task with id " + taskId + " not found!"));
+        StatusType newStatus = statusTypeRepository.findById(statusId)
+                        .orElseThrow(() -> new RuntimeException("StatusType with id " + statusId + " not found!"));
 
-        StatusType updatedStatus = statusTypeRepository.getReferenceById(statusId);
-        if(task != null) {
-            task.setStatusType(updatedStatus);
-            Task savedTask = taskRepository.save(task);
-            return taskMapper.toDTO(savedTask);
+        boolean isAdmin = currentUser.getRole() != null && "ADMIN".equalsIgnoreCase(currentUser.getRole().getRoleName());
+
+        if(!isAdmin){
+            List<String> allowedStatuses = List.of("Pending", "In Progress", "Review");
+
+            if(!allowedStatuses.contains(newStatus.getStatusName())){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "You do not have permission to set this status. You can only use: Pending, In Progress, Review.\n");
+            }
+
         }
-        return null;
+
+        log.info("Task status with id {} updated!", taskId);
+
+        task.setStatusType(newStatus);
+        taskRepository.save(task);
+
+        return taskMapper.toDTO(task);
     }
 
     public TaskDTO createTask(TaskDTO taskDTO) {
         log.info("Task created!");
 
         Task task = taskMapper.toEntity(taskDTO);
+
+        if(taskDTO.getUserId() == null){
+            List<User> users = userRepository.findUsersOrderedByTaskCount();
+
+            if(!users.isEmpty()){
+                User leastBusyUser = users.getFirst();
+                task.setUser(leastBusyUser);
+            }
+
+        }
+        else{
+            userRepository.findById(taskDTO.getUserId()).ifPresent(task::setUser);
+        }
         Task savedTask = taskRepository.save(task);
 
         return taskMapper.toDTO(savedTask);

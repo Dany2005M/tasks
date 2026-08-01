@@ -14,7 +14,7 @@ public class TaskMapper {
     private final UserRepository userRepository;
 
     public TaskDTO toDTO(Task task) {
-        if(task == null) {
+        if (task == null) {
             return null;
         }
 
@@ -23,8 +23,8 @@ public class TaskMapper {
                 .name(task.getName())
                 .dueDate(task.getDueDate())
                 .createdBy(task.getCreatedBy())
-                .statusTypeId(task.getStatusType().getStatusTypeId())
-                .userId(task.getUser().getUserId())
+                .statusTypeId(task.getStatusType() != null ? task.getStatusType().getStatusTypeId() : null)
+                .userId(task.getUser() != null ? task.getUser().getUserId() : null)
                 .lastUpdatedBy(task.getLastUpdatedBy())
                 .lastUpdateDate(task.getLastUpdateDate())
                 .creationDate(task.getCreationDate())
@@ -33,15 +33,15 @@ public class TaskMapper {
     }
 
     public Task toEntity(TaskDTO taskDTO) {
-        if(taskDTO == null) {
+        if (taskDTO == null) {
             return null;
         }
 
         return Task.builder()
                 .name(taskDTO.getName())
                 .dueDate(taskDTO.getDueDate())
-                .statusType(statusTypeRepository.getReferenceById(taskDTO.getStatusTypeId()))
-                .user(userRepository.getReferenceById(taskDTO.getUserId()))
+                .statusType(taskDTO.getStatusTypeId() != null ? statusTypeRepository.getReferenceById(taskDTO.getStatusTypeId()) : null)
+                .user(taskDTO.getUserId() != null ? userRepository.getReferenceById(taskDTO.getUserId()) : null)
                 .createdByFullName(taskDTO.getCreatedByFullName())
                 .build();
     }

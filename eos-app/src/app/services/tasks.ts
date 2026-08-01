@@ -23,6 +23,10 @@ export class Tasks {
     return this.http.put(`http://localhost:8080/tasks/${task.taskId}`, task);
   }
 
+  public updateTaskStatus(taskId: number, newStatusId: string) {
+    return this.http.patch(`http://localhost:8080/tasks/${taskId}/status/${newStatusId}`, {});
+  }
+
   public deleteTask(taskId: number) {
     return this.http.delete(`http://localhost:8080/tasks/${taskId}`);
   }

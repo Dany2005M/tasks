@@ -15,6 +15,17 @@
       <input type="date" class="form-control" name="dueDate" [(ngModel)]="formData.dueDate">
     </div>
 
+    <div class="mb-3">
+      <label class="form-label">Assign To</label>
+      <select class="form-select" name="userId" [(ngModel)]="formData.userId">
+        <option [ngValue]="null">-- Auto-assign --</option>
+        @for (user of availableUsers(); track user.userId) {
+          <option [ngValue]="user.userId">{{ user.username }}</option>
+        }
+      </select>
+    </div>
+    
+
         <div class="mb-3">
       <label class="form-label">Status</label>
       <select class="form-select" name="statusType" [(ngModel)]="formData.statusTypeId">
