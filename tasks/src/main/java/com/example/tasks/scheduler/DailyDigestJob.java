@@ -36,29 +36,23 @@ public class DailyDigestJob {
             List<Task> actionableTasks = taskRepository.findActionableTasksForUser(user.getUserId());
 
             if(!actionableTasks.isEmpty()) {
-                long dueTodayCount = actionableTasks.stream()
+                List<Task> urgentTasks = actionableTasks.stream()
                         .filter(task -> task.getDueDate().isEqual(today))
-                        .count();
-                long overdueCount = actionableTasks.stream()
+                        .toList();
+                List<Task> overdueTasks = actionableTasks.stream()
                         .filter(task -> task.getDueDate().isBefore(today))
-                        .count();
+                        .toList();
 
-                StringBuilder emailBody = new StringBuilder();
-                emailBody.append("Hello  ").append(user.getUsername()).append(",\n\n");
-                emailBody.append("Here is your daily digest:\n\n");
-                emailBody.append("- Tasks with due date TODAY: ").append(dueTodayCount).append("\n");
-                emailBody.append("- Overdue Tasks: ").append(overdueCount).append("\n\n");
-
-                for(Task task: actionableTasks) {
-                    emailBody.append(" • [").append(task.getStatusType().getStatusName()).append("] ").append(task.getName()).append("\n");
-                }
-
-                emailBody.append("\nPlease enter on the platform to view them. \nHave a great day!");
                 try {
-                    emailService.sendSimpleEmail(user.getEmail(), "Daily digest - Your tasks", emailBody.toString());
-                    log.info("Digest sent successfully to: {}", user.getEmail());
+                    emailService.sendEmail(
+                            user.getEmail(),
+                            user.getUsername(),
+                            overdueTasks,
+                            urgentTasks
+                    );
+                    log.info("DailyDigestJob has been sent to user {}", user.getEmail());
                 } catch (Exception e) {
-                    log.error("Failed to send daily tasks email to: {}", user.getEmail(), e);
+                    log.error("Failed to send DailyDigestJob email to user {}", user.getEmail(), e);
                 }
             }
         }
