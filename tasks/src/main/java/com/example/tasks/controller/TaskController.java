@@ -4,6 +4,8 @@ import com.example.tasks.dto.TaskDTO;
 import com.example.tasks.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +24,12 @@ public class TaskController {
 
     @GetMapping
     @PreAuthorize("@permissions_checker.hasPermission('TASK', 'READ')")
-    public List<TaskDTO> getAllTasks() {
-        return taskService.getAllTasks();
+    public ResponseEntity<Page<TaskDTO>> getAllTasks(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size,
+                                                     @RequestParam(defaultValue = "taskId") String sortBy,
+                                                     @RequestParam(defaultValue = "ASC") String sortDirection
+    ) {
+        return ResponseEntity.ok(taskService.getAllTasks(page, size, sortBy, sortDirection));
     }
 
     @GetMapping("/{id}")
@@ -31,10 +37,6 @@ public class TaskController {
         return taskService.getTaskById(id);
     }
 
-    @GetMapping("/user/{id}")
-    public List<TaskDTO> getTasksByUserId(@PathVariable Long id) {
-        return taskService.getTasksByUserId(id);
-    }
 
     @GetMapping("/sorted-by-due-date")
     public List<TaskDTO> getTasksSortedByDueDate() {
@@ -57,12 +59,16 @@ public class TaskController {
     }
 
     @GetMapping("/search")
-    public List<TaskDTO> searchTasks(@RequestParam(required = false) String subject,
+    public ResponseEntity<Page<TaskDTO>> searchTasks(@RequestParam(required = false) String subject,
                                      @RequestParam(required = false) String assignedTo,
                                      @RequestParam(required = false) LocalDate dueDate,
-                                     @RequestParam(required = false) String status) {
-
-        return taskService.searchTasks(subject,assignedTo,dueDate,status);
+                                     @RequestParam(required = false) String status,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size,
+                                     @RequestParam(defaultValue = "taskId") String sortBy,
+                                     @RequestParam(defaultValue = "ASC") String sortDirection
+    ) {
+        return ResponseEntity.ok(taskService.searchTasks(subject,  assignedTo, dueDate, status, page, size, sortBy, sortDirection));
     }
 
     @PostMapping
@@ -92,7 +98,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public List<TaskDTO> deleteTaskById(@PathVariable Long id) {
-        return taskService.deleteTaskById(id);
+    public ResponseEntity<Void> deleteTaskById(@PathVariable Long id) {
+       taskService.deleteTaskById(id);
+       return ResponseEntity.ok().build();
     }
 }

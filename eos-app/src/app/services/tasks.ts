@@ -7,12 +7,12 @@ import { HttpClient } from '@angular/common/http';
 export class Tasks {
   private http = inject(HttpClient);
 
-  public getTasks() {
-    return this.http.get<any[]>('http://localhost:8080/tasks');
+  public getTasks(page: number = 0, size: number = 10, sortBy: string = 'taskId', sortDirection: string = 'ASC') {
+    return this.http.get<any>('http://localhost:8080/tasks', {params: {page, size, sortBy, sortDirection}});
   }
 
-  public searchTasks(searchCriteria: any) {
-    return this.http.get<any[]>('http://localhost:8080/tasks/search', {params: searchCriteria});
+  public searchTasks(searchCriteria: any, page: number = 0, size: number = 10, sortBy: string = 'taskId', sortDirection: string = 'ASC') {
+    return this.http.get<any>('http://localhost:8080/tasks/search', {params: {...searchCriteria, page, size, sortBy, sortDirection}});
   }
 
   public createTask(task: any) {

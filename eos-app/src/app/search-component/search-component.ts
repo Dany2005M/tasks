@@ -31,6 +31,12 @@ export class SearchComponent implements OnInit {
   searchResults = signal<TaskDTO[]>([]);
   hasSearched: boolean = false;
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  sortBy: string = 'taskId';
+  sortDirection: string = 'ASC';
+  totalPages: number = 0;
+
 ngOnInit(): void {
    this.statusService.getStatuses().subscribe((statuses) => {
       this.availableStatuses.set(statuses);
@@ -58,14 +64,20 @@ ngOnInit(): void {
 
   onSearch(): void {
     this.hasSearched = true;
+    this.currentPage = 0; 
+    this.fetchResults();
+  }
+
+  fetchResults(): void {
 
     const cleanParams = Object.fromEntries(
       Object.entries(this.searchParams).filter(([_, value]) => value !== '' && value !== null)
     );
 
-    this.taskService.searchTasks(cleanParams).subscribe({
+    this.taskService.searchTasks(cleanParams, this.currentPage, this.pageSize, this.sortBy, this.sortDirection).subscribe({
       next: (results) => {
-        this.searchResults.set(results);
+        this.searchResults.set(results.content);
+        this.totalPages = results.totalPages;
         console.log('Search results:', results);
       },
       error: (error) => {
@@ -74,8 +86,34 @@ ngOnInit(): void {
       }
     });
 
-    
   }
+
+  nextPage(): void {
+    if(this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.fetchResults();
+    }
+  }
+
+  previousPage(): void {
+    if(this.currentPage > 0) {
+      this.currentPage--;
+      this.fetchResults();
+    }
+  }
+
+  changeSort(field: string): void {
+    if(this.sortBy === field) {
+      this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sortBy = field;
+      this.sortDirection = 'ASC';
+    }
+
+    this.currentPage = 0;
+    this.fetchResults();
+  }
+  
 
   clearFilters(): void {
       this.searchParams = {
@@ -86,6 +124,9 @@ ngOnInit(): void {
       };
       this.searchResults.set([]);
       this.hasSearched = false;
+
+      this.currentPage = 0;
+      this.totalPages = 0;
     }
 
 }

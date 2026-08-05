@@ -10,6 +10,10 @@ import com.example.tasks.repository.TaskRepository;
 import com.example.tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,7 +34,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final TaskMapper taskMapper;
 
-    public List<TaskDTO> getAllTasks() {
+    public Page<TaskDTO> getAllTasks(int page, int size, String sortBy, String sortDirection) {
         log.info("Tasks retrieved!");
 
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
@@ -39,19 +43,29 @@ public class TaskService {
         User loggedUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
 
-        List<Task> tasks;
+        String convertedSortField = switch(sortBy.toLowerCase()) {
+            case "user" -> "user.username";
+            case "name" -> "name";
+            case "status" -> "statusType.statusName";
+            case "date" -> "dueDate";
+            default -> "taskId";
+        };
+
+        Sort sort = sortDirection.equals(Sort.Direction.ASC.name()) ?
+                Sort.by(convertedSortField).ascending() : Sort.by(convertedSortField).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Task> taskPage;
 
         if(loggedUser.getRole() != null && "ADMIN".equalsIgnoreCase(loggedUser.getRole().getRoleName())){
-            tasks = taskRepository.findAll();
+            taskPage = taskRepository.findAll(pageable);
         }
         else{
-            tasks = taskRepository.findByUser_UserId(loggedUser.getUserId());
+            taskPage = taskRepository.findByUser_UserId(loggedUser.getUserId(), pageable);
         }
 
-        return tasks
-                .stream()
-                .map(taskMapper::toDTO)
-                .toList();
+        return taskPage.map(taskMapper::toDTO);
     }
 
     public TaskDTO getTaskById(Long id) {
@@ -62,20 +76,24 @@ public class TaskService {
                 .orElse(null);
     }
 
-    public List<TaskDTO> getTasksByUserId(Long userId) {
-        log.info("Tasks with user id {} retrieved!", userId);
+    public Page<TaskDTO> searchTasks(String subject, String assignedTo, LocalDate dueDate, String status, int page, int size, String sortBy, String sortDirection) {
 
-        return taskRepository.findByUser_UserId(userId)
-                .stream()
-                .map(taskMapper::toDTO)
-                .toList();
-    }
+        String convertedSortField = switch(sortBy.toLowerCase()) {
+            case "user" -> "user.username";
+            case "name" -> "name";
+            case "status" -> "statusType.statusName";
+            case "date" -> "dueDate";
+            default -> "taskId";
+        };
 
-    public List<TaskDTO> searchTasks(String subject, String assignedTo, LocalDate dueDate, String status) {
-        return taskRepository.SearchTasks(subject, assignedTo, dueDate, status)
-                .stream()
-                .map(taskMapper::toDTO)
-                .toList();
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(convertedSortField).ascending() : Sort.by(convertedSortField).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Task> taskPage = taskRepository.searchTasks(subject, assignedTo, dueDate, status, pageable);
+
+        return taskPage.map(taskMapper::toDTO);
     }
 
     public List<TaskDTO> getTasksSortedByDueDate() {
@@ -177,8 +195,10 @@ public class TaskService {
                 .map(taskMapper::toEntity)
                 .toList();
 
-        taskRepository.saveAll(tasks);
-        return getAllTasks();
+        List<Task> savedTasks = taskRepository.saveAll(tasks);
+        return savedTasks.stream()
+                .map(taskMapper::toDTO)
+                .toList();
     }
 
     public TaskDTO updateTask(Long id, TaskDTO taskDTO) {
@@ -208,12 +228,10 @@ public class TaskService {
         taskRepository.deleteAll();
     }
 
-    public List<TaskDTO> deleteTaskById(Long id) {
+    public void deleteTaskById(Long id) {
         log.info("Task with id {} deleted!", id);
-
         taskRepository.deleteById(id);
 
-        return getAllTasks();
     }
 
 

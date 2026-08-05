@@ -7,6 +7,45 @@
     }
   </div>
 
+  <div class="d-flex align-items-center gap-2 mb-4 bg-light p-3 rounded border">
+    <span class="fw-bold me-2">Sort by:</span>
+    
+    <button class="btn btn-sm" 
+            [class.btn-primary]="sortBy === 'taskId'" 
+            [class.btn-outline-secondary]="sortBy !== 'taskId'" 
+            (click)="changeSort('taskId')">
+      ID @if(sortBy === 'taskId'){ <span>{{ sortDirection === 'ASC' ? '↑' : '↓' }}</span> }
+    </button>
+    
+    <button class="btn btn-sm" 
+            [class.btn-primary]="sortBy === 'name'" 
+            [class.btn-outline-secondary]="sortBy !== 'name'" 
+            (click)="changeSort('name')">
+      Task Name @if(sortBy === 'name'){ <span>{{ sortDirection === 'ASC' ? '↑' : '↓' }}</span> }
+    </button>
+    
+    <button class="btn btn-sm" 
+            [class.btn-primary]="sortBy === 'user'" 
+            [class.btn-outline-secondary]="sortBy !== 'user'" 
+            (click)="changeSort('user')">
+      User @if(sortBy === 'user'){ <span>{{ sortDirection === 'ASC' ? '↑' : '↓' }}</span> }
+    </button>
+
+    <button class="btn btn-sm" 
+            [class.btn-primary]="sortBy === 'dueDate'" 
+            [class.btn-outline-secondary]="sortBy !== 'dueDate'" 
+            (click)="changeSort('dueDate')">
+      Due Date @if(sortBy === 'dueDate'){ <span>{{ sortDirection === 'ASC' ? '↑' : '↓' }}</span> }
+    </button>
+
+    <button class="btn btn-sm" 
+            [class.btn-primary]="sortBy === 'status'" 
+            [class.btn-outline-secondary]="sortBy !== 'status'" 
+            (click)="changeSort('status')">
+      Status @if(sortBy === 'status'){ <span>{{ sortDirection === 'ASC' ? '↑' : '↓' }}</span> }
+    </button>
+  </div>
+
   <div class="task-grid">
     @for (task of tasks(); track task.taskId) {
       <div class="task-card">
@@ -47,5 +86,23 @@
 
       </div>
     }
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-5 mb-4 p-3 bg-light rounded border">
+    <button class="btn btn-outline-primary" 
+            [disabled]="currentPage === 0" 
+            (click)="previousPage()">
+      &laquo; Previous
+    </button>
+    
+    <span class="fw-bold">
+      Page {{ currentPage + 1 }} of {{ totalPages === 0 ? 1 : totalPages }}
+    </span>
+    
+    <button class="btn btn-outline-primary" 
+            [disabled]="currentPage >= totalPages - 1 || totalPages === 0" 
+            (click)="nextPage()">
+      Next &raquo;
+    </button>
   </div>
 </div>

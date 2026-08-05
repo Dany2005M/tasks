@@ -25,6 +25,12 @@ export class MyTaskComponent implements OnInit{
 
   isAdmin: boolean = false;
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  sortBy: string = 'taskId';
+  sortDirection: string = 'ASC';
+  totalPages: number = 0;
+
   ngOnInit(): void {
     this.loadTasks();
     this.statusService.getStatuses().subscribe((res: StatusDTO[]) => this.availableStatuses.set(res));
@@ -37,16 +43,39 @@ export class MyTaskComponent implements OnInit{
   }
 
   loadTasks() : void {
-    this.taskService.getTasks().subscribe(res => {
+    this.taskService.getTasks(this.currentPage, this.pageSize, this.sortBy, this.sortDirection).subscribe(res => {
       console.log('API Response:', res);
-      const sortedTasks = res.sort((a: TaskDTO, b: TaskDTO) => {
-        const dateA = new Date(a.dueDate).getTime();
-        const dateB = new Date(b.dueDate).getTime();
-        
-        return dateB - dateA; 
-      });
-      this.tasks.set(sortedTasks);
+      
+      this.tasks.set(res.content);
+      
+      this.totalPages = res.totalPages;
     });
+  }
+
+  nextPage() : void {
+    if(this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadTasks();
+    }
+  }
+
+  previousPage() : void {
+    if(this.currentPage > 0) {
+      this.currentPage--;
+      this.loadTasks();
+    }
+  }
+
+  changeSort(field: string) : void {
+    if(this.sortBy === field) {
+      this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sortBy = field;
+      this.sortDirection = 'ASC';
+    }
+
+    this.currentPage = 0;
+    this.loadTasks();
   }
 
   openTaskModal(task: TaskDTO | null = null) : void {

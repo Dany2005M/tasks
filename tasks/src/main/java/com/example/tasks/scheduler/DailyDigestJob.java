@@ -21,7 +21,7 @@ public class DailyDigestJob {
     private final TaskRepository taskRepository;
     private final EmailService emailService;
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     public void generateAndSendDailyDigest() {
         log.info("Starting DailyDigestJob");
 
